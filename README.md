@@ -1,2 +1,5 @@
-# Treehouse-Unit2-Take2
- Second attempt at Unit 2 - List Pagination and Filtering
+# Techdegree Project
+
+# Full Stack JavaScript
+
+# Unit 1 - Random Quote Generator
