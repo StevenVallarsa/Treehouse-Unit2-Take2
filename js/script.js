@@ -22,7 +22,7 @@ FSJS project 2 - List Filter and Pagination
 
 const list = document.querySelectorAll(".student-item");
 const itemPerPage = 10;
-const pageNumber = 1; // starting page number
+let pageNumber = 1; // starting page number
 /*** 
    Create the `showPage` function to hide all of the items in the 
    list except for the ten you want to show.
@@ -58,30 +58,47 @@ const showPage = (list, page) => {
 
 const appendPageLinks = list => {
   const page = document.querySelector(".page");
+  const numberOfPages = Math.ceil(list.length / itemPerPage);
 
   const div = document.createElement("div");
-  div.setAttribute("class", "pagintion");
+  div.setAttribute("class", "pagination");
 
   const ul = document.createElement("ul");
 
-  for (let i = 1; i < list.length / 10; i++) {
+  for (let i = 1; i <= numberOfPages; i++) {
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.textContent = i;
     if (i !== pageNumber) {
-      // don't make active page clickable
+      // does not set href attribute to active page so as not to make it clickable
       a.setAttribute("href", "#");
     } else {
       a.className = "active";
     }
+
     li.appendChild(a);
     ul.appendChild(li);
   }
+
   div.appendChild(ul);
-  console.log(div);
+  page.appendChild(div);
 };
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
+// for ()
 
-showPage(list, 2);
+showPage(list, pageNumber);
 appendPageLinks(list);
+
+const pageClick = document.querySelector(".pagination");
+pageClick.addEventListener("click", e => {
+  if (e.target.tagName === "A") {
+    pageNumber = parseInt(e.target.innerHTML);
+    showPage(list, pageNumber);
+
+    const deletePagination = document.querySelector(".pagination");
+    const ulChild = deletePagination.firstChild;
+    deletePagination.removeChild(ulChild);
+    appendPageLinks(list);
+  }
+});
