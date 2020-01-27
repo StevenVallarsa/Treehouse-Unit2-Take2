@@ -10,7 +10,7 @@ FSJS project 2 - List Filter and Pagination
  * * */
 
 const list = document.querySelectorAll(".student-item");
-const itemPerPage = 10;
+const itemsPerPage = 10;
 let pageNumber = 1; // starting page number
 
 /* * *
@@ -18,8 +18,8 @@ let pageNumber = 1; // starting page number
  * * */
 
 const showPage = (list, page) => {
-  let startIndex = page * itemPerPage - itemPerPage;
-  let endIndex = page * itemPerPage;
+  let startIndex = page * itemsPerPage - itemsPerPage;
+  let endIndex = page * itemsPerPage;
 
   for (let i = 0; i < list.length; i++) {
     if (i + 1 > startIndex && i < endIndex) {
@@ -37,9 +37,7 @@ const showPage = (list, page) => {
 
 const appendPageLinks = list => {
   const page = document.querySelector(".page");
-
-  const numberOfPages = Math.ceil(list.length / itemPerPage);
-  console.log(numberOfPages);
+  const numberOfPages = Math.ceil(list.length / itemsPerPage);
   const div = document.createElement("div");
   div.setAttribute("class", "pagination");
   const ul = document.createElement("ul");
@@ -58,8 +56,13 @@ const appendPageLinks = list => {
     ul.appendChild(li);
   }
 
+  if (list.length === 0) {
+    ul.textContent = "Sorry, no matches. Please try again.";
+  }
+
   div.appendChild(ul);
   page.appendChild(div);
+
   let pageClick = document.querySelector(".pagination");
 
   pageClick.addEventListener("click", e => {
@@ -72,13 +75,15 @@ const appendPageLinks = list => {
     }
   });
 };
+
 function deletePaginationLinks() {
   const deletePagination = document.querySelector(".page");
   const ulChild = deletePagination.lastChild;
   deletePagination.removeChild(ulChild);
 }
 
-// create search button
+// create search / reset buttons
+const searchFunction = () => {};
 const search = document.querySelector(".page-header");
 
 const searchDiv = document.createElement("div");
@@ -89,19 +94,23 @@ searchInput.placeholder = "Search for students...";
 const searchButton = document.createElement("button");
 searchButton.textContent = "Search";
 searchButton.className = "submit";
+const resetButton = document.createElement("button");
+resetButton.textContent = "Reset";
+resetButton.className = "reset";
 searchDiv.appendChild(searchInput);
 searchDiv.appendChild(searchButton);
+searchDiv.appendChild(resetButton);
 search.appendChild(searchDiv);
 
 const searchButtonClick = document.querySelector(".submit");
+const resetButtonClick = document.querySelector(".reset");
 const h3 = document.querySelectorAll("h3");
 
-//search button listener
+// search button listener
 searchButtonClick.addEventListener("click", e => {
   e.preventDefault();
   let newList = [];
   let searchTerm = searchInput.value;
-  console.log(searchTerm);
   for (let i = 0; i < list.length; i++) {
     if (
       searchInput.value.length !== 0 &&
@@ -113,29 +122,23 @@ searchButtonClick.addEventListener("click", e => {
       list[i].style.display = "none";
     }
   }
+
   searchInput.value = "";
+  pageNumber = 1;
+  showPage(newList, 1);
   deletePaginationLinks();
   appendPageLinks(newList);
 });
 
-// function searchFunction() {
-//    let count = 0;
-//    for (let i = 0; i < list.length; i++) {
-//       list[i].className = "none";
-//       if (
-//          searchInput.value.length !== 0 &&
-//          list[i].textContent.toLowerCase.includes(searchInput.value.toLowerCase())
-//          ) {
-//             list[i].className = "";
-//             count++;
-//          }
-//       }
-//       if (count === 0) {
-//       }
-//    }
+// reset button listener
+resetButtonClick.addEventListener("click", () => {
+  pageNumber = 1;
+  showPage(list, 1);
+  deletePaginationLinks();
+  appendPageLinks(list);
+});
 
-// Runs script on first load.
+// Runs script on load.
 // Other iterations will be done through the appendPageLink function.
-
 showPage(list, pageNumber);
 appendPageLinks(list);
