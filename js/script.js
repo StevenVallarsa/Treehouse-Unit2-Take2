@@ -35,11 +35,11 @@ const showPage = (list, page) => {
  * Includes click handler function to make non-active page buttons clickable
  * * */
 
-const appendPageLinks = () => {
+const appendPageLinks = list => {
   const page = document.querySelector(".page");
 
   const numberOfPages = Math.ceil(list.length / itemPerPage);
-
+  console.log(numberOfPages);
   const div = document.createElement("div");
   div.setAttribute("class", "pagination");
   const ul = document.createElement("ul");
@@ -67,14 +67,75 @@ const appendPageLinks = () => {
       pageNumber = parseInt(e.target.innerHTML);
       showPage(list, pageNumber);
 
-      const deletePagination = document.querySelector(".page");
-      const ulChild = deletePagination.lastChild;
-      deletePagination.removeChild(ulChild);
-      appendPageLinks();
+      deletePaginationLinks();
+      appendPageLinks(list);
     }
   });
 };
+function deletePaginationLinks() {
+  const deletePagination = document.querySelector(".page");
+  const ulChild = deletePagination.lastChild;
+  deletePagination.removeChild(ulChild);
+}
 
-//runs script for the first time. Other iterations will be done through the appendPageLink function
+// create search button
+const search = document.querySelector(".page-header");
+
+const searchDiv = document.createElement("div");
+searchDiv.className = "student-search";
+const searchInput = document.createElement("input");
+searchInput.type = "text";
+searchInput.placeholder = "Search for students...";
+const searchButton = document.createElement("button");
+searchButton.textContent = "Search";
+searchButton.className = "submit";
+searchDiv.appendChild(searchInput);
+searchDiv.appendChild(searchButton);
+search.appendChild(searchDiv);
+
+const searchButtonClick = document.querySelector(".submit");
+const h3 = document.querySelectorAll("h3");
+
+//search button listener
+searchButtonClick.addEventListener("click", e => {
+  e.preventDefault();
+  let newList = [];
+  let searchTerm = searchInput.value;
+  console.log(searchTerm);
+  for (let i = 0; i < list.length; i++) {
+    if (
+      searchInput.value.length !== 0 &&
+      h3[i].textContent.toLowerCase().includes(searchInput.value.toLowerCase())
+    ) {
+      list[i].style.display = "";
+      newList.push(list[i]);
+    } else {
+      list[i].style.display = "none";
+    }
+  }
+  searchInput.value = "";
+  deletePaginationLinks();
+  appendPageLinks(newList);
+});
+
+// function searchFunction() {
+//    let count = 0;
+//    for (let i = 0; i < list.length; i++) {
+//       list[i].className = "none";
+//       if (
+//          searchInput.value.length !== 0 &&
+//          list[i].textContent.toLowerCase.includes(searchInput.value.toLowerCase())
+//          ) {
+//             list[i].className = "";
+//             count++;
+//          }
+//       }
+//       if (count === 0) {
+//       }
+//    }
+
+// Runs script on first load.
+// Other iterations will be done through the appendPageLink function.
+
 showPage(list, pageNumber);
-appendPageLinks();
+appendPageLinks(list);
